@@ -6,14 +6,10 @@ public class SimpleGeneticAlgorithm {
 	private static final double mutationRate = 0.025;
 	private static final int tournamentSize = 5;
 	private static final boolean elitism = true;
-	private static byte[] solution = new byte[64];
+	
 
-	public boolean runAlgorithm(int populationSize, String solution) {
-		if (solution.length() != SimpleGeneticAlgorithm.solution.length) {
-			throw new RuntimeException(
-					"The solution needs to have " + SimpleGeneticAlgorithm.solution.length + " bytes");
-		}
-		setSolution(solution);
+	public boolean runAlgorithm(int populationSize) {
+
 		Population myPop = new Population(populationSize, true);
 
 		int generationCount = 1;
@@ -88,29 +84,14 @@ public class SimpleGeneticAlgorithm {
 
 	protected static int getFitness(Individual individual) {
 		int fitness = 0;
-		for (int i = 0; i < individual.getDefaultGeneLength() && i < solution.length; i++) {
-			if (individual.getSingleGene(i) == solution[i]) {
-				fitness++;
-			}
-		}
+//		for (int i = 0; i < individual.getDefaultGeneLength() && i < solution.length; i++) {
+//			if (individual.getSingleGene(i) == solution[i]) {
+//				fitness++;
+//			}
+//		}
 		return fitness;
 	}
 
-	protected int getMaxFitness() {
-		int maxFitness = solution.length;
-		return maxFitness;
-	}
 
-	protected void setSolution(String newSolution) {
-		solution = new byte[newSolution.length()];
-		for (int i = 0; i < newSolution.length(); i++) {
-			String character = newSolution.substring(i, i + 1);
-			if (character.contains("0") || character.contains("1")) {
-				solution[i] = Byte.parseByte(character);
-			} else {
-				solution[i] = 0;
-			}
-		}
-	}
 
 }
