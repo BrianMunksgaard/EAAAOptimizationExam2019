@@ -2,7 +2,7 @@ package dk.eaaa.bm.optimization.problem;
 
 import java.util.ArrayList;
 
-public class RevAckley extends Problem {
+public class RevAckley extends AbstractProblem {
 
 	public RevAckley() {
 		super();
@@ -19,7 +19,7 @@ public class RevAckley extends Problem {
 	}
 
 	@Override
-	public double Eval(ArrayList<Double> paramVals) {
+	public double eval(ArrayList<Double> paramVals) {
 
 		double sum1 = 0.0;
 		double sum2 = 0.0;

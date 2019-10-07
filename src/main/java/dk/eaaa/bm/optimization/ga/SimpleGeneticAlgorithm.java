@@ -1,5 +1,7 @@
 package dk.eaaa.bm.optimization.ga;
 
+import dk.eaaa.bm.optimization.problem.Problem;
+
 public class SimpleGeneticAlgorithm {
 
 	private static final double uniformRate = 0.5;
@@ -8,21 +10,21 @@ public class SimpleGeneticAlgorithm {
 	private static final boolean elitism = true;
 	
 
-	public boolean runAlgorithm(int populationSize) {
+	public boolean runAlgorithm(Problem problem, int populationSize) {
 
 		Population myPop = new Population(populationSize, true);
 
 		int generationCount = 1;
-		while (myPop.getFittest().getFitness() < getMaxFitness()) {
-			System.out.println(
-					"Generation: " + generationCount + " Correct genes found: " + myPop.getFittest().getFitness());
-			myPop = evolvePopulation(myPop);
-			generationCount++;
-		}
-		System.out.println("Solution found!");
-		System.out.println("Generation: " + generationCount);
-		System.out.println("Genes: ");
-		System.out.println(myPop.getFittest());
+//		while (myPop.getFittest().getFitness() < getMaxFitness()) {
+//			System.out.println(
+//					"Generation: " + generationCount + " Correct genes found: " + myPop.getFittest().getFitness());
+//			myPop = evolvePopulation(myPop);
+//			generationCount++;
+//		}
+//		System.out.println("Solution found!");
+//		System.out.println("Generation: " + generationCount);
+//		System.out.println("Genes: ");
+//		System.out.println(myPop.getFittest());
 		return true;
 	}
 
@@ -52,7 +54,7 @@ public class SimpleGeneticAlgorithm {
 	}
 
 	private Individual crossover(Individual indiv1, Individual indiv2) {
-		Individual newSol = new Individual();
+		Individual newSol = null;//new Individual();
 		for (int i = 0; i < newSol.getDefaultGeneLength(); i++) {
 			if (Math.random() <= uniformRate) {
 				newSol.setSingleGene(i, indiv1.getSingleGene(i));
@@ -82,13 +84,8 @@ public class SimpleGeneticAlgorithm {
 		return fittest;
 	}
 
-	protected static int getFitness(Individual individual) {
-		int fitness = 0;
-//		for (int i = 0; i < individual.getDefaultGeneLength() && i < solution.length; i++) {
-//			if (individual.getSingleGene(i) == solution[i]) {
-//				fitness++;
-//			}
-//		}
+	protected static double getFitness(Individual individual, Problem problem) {
+		double fitness = problem.eval(individual.getGenes());
 		return fitness;
 	}
 

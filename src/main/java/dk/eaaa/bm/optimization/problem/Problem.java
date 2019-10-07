@@ -2,34 +2,17 @@ package dk.eaaa.bm.optimization.problem;
 
 import java.util.ArrayList;
 
-public abstract class Problem {
+public interface Problem {
 
-	private ArrayList<Double> maxValues;
-	private ArrayList<Double> minValues;
+	public double eval(ArrayList<Double> paramVals);
 
-	public Problem() {
-		maxValues = new ArrayList<>();
-		minValues = new ArrayList<>();
-	}
+	public int getDimensions();
 
-	public abstract double Eval(ArrayList<Double> paramVals);
+	public void setMaxValues(ArrayList<Double> maxVals);
 
-	public abstract int getDimensions();
+	public void setMinValues(ArrayList<Double> minVals);
 
-	public void setMaxValues(ArrayList<Double> maxVals) {
-		maxValues = maxVals;
-	}
+	public ArrayList<Double> getMaxValues();
 
-	public void setMinValues(ArrayList<Double> minVals) {
-		minValues = minVals;
-	}
-
-	public ArrayList<Double> getMaxValues() {
-		return maxValues;
-	}
-
-	public ArrayList<Double> getMinValues() {
-		return minValues;
-	}
-
+	public ArrayList<Double> getMinValues();
 }

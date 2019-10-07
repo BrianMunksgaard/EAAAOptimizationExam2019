@@ -3,12 +3,16 @@ package dk.eaaa.bm.optimization.ga;
 import java.util.ArrayList;
 import java.util.List;
 
+import dk.eaaa.bm.optimization.problem.Problem;
+
 public class Population {
 
 	private List<Individual> individuals;
-
-	public Population(int size, boolean createNew) {
+	private Problem problem;
+	
+	public Population(Problem problem, int size, boolean createNew) {
 		individuals = new ArrayList<>();
+		this.problem = problem;
 		if (createNew) {
 			createNewPopulation(size);
 		}
@@ -30,7 +34,7 @@ public class Population {
 
 	private void createNewPopulation(int size) {
 		for (int i = 0; i < size; i++) {
-			Individual newIndividual = new Individual();
+			Individual newIndividual = new Individual(problem);
 			individuals.add(i, newIndividual);
 		}
 	}

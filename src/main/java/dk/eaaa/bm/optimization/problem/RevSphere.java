@@ -2,7 +2,7 @@ package dk.eaaa.bm.optimization.problem;
 
 import java.util.ArrayList;
 
-public class RevSphere extends Problem {
+public class RevSphere extends AbstractProblem {
 
 	public RevSphere() {
 		super();
@@ -21,7 +21,7 @@ public class RevSphere extends Problem {
 	}
 
 	@Override
-	public double Eval(ArrayList<Double> paramVals) {
+	public double eval(ArrayList<Double> paramVals) {
 		double sum = 0.0;
 		for (int i = 0; i < paramVals.size(); i++) {
 			sum = sum - Math.pow(paramVals.get(i), 2.0);

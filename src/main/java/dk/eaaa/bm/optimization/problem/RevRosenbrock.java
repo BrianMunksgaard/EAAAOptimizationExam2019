@@ -2,7 +2,7 @@ package dk.eaaa.bm.optimization.problem;
 
 import java.util.ArrayList;
 
-public class RevRosenbrock extends Problem {
+public class RevRosenbrock extends AbstractProblem {
 
 	public RevRosenbrock() {
 		super();
@@ -21,7 +21,7 @@ public class RevRosenbrock extends Problem {
 	}
 
 	@Override
-	public double Eval(ArrayList<Double> paramVals) {
+	public double eval(ArrayList<Double> paramVals) {
 		int numberOfVariables = paramVals.size();
 
 		double[] x = new double[numberOfVariables];

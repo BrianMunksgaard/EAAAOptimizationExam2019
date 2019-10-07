@@ -2,7 +2,7 @@ package dk.eaaa.bm.optimization.problem;
 
 import java.util.ArrayList;
 
-public class P2 extends Problem {
+public class P2 extends AbstractProblem {
 
 	public P2() {
 		super();
@@ -19,7 +19,7 @@ public class P2 extends Problem {
 	}
 
 	@Override
-	public double Eval(ArrayList<Double> paramVals) {
+	public double eval(ArrayList<Double> paramVals) {
 		return Math.pow(Math.E, -(Math.pow(paramVals.get(0), 2.0) + Math.pow(paramVals.get(1), 2.0))) + 2
 				* Math.pow(Math.E, -(Math.pow(paramVals.get(0) - 1.7, 2.0) + Math.pow(paramVals.get(1) - 1.7, 2.0)));
 	}
