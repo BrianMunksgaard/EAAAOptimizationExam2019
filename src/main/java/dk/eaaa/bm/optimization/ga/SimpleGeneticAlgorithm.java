@@ -40,17 +40,16 @@ public class SimpleGeneticAlgorithm {
 	}
 
 	public Population evolvePopulation(Population pop) {
-		int elitismOffset;
 		Population newPopulation = new Population(problem, pop.getIndividuals().size(), false);
 
-		for (int i = elitismOffset; i < pop.getIndividuals().size(); i++) {
+		for (int i = elite; i < pop.getIndividuals().size(); i++) {
 			Individual indiv1 = tournamentSelection(pop);
 			Individual indiv2 = tournamentSelection(pop);
 			Individual newIndiv = crossover(indiv1, indiv2);
 			newPopulation.getIndividuals().add(i, newIndiv);
 		}
 
-		for (int i = elitismOffset; i < newPopulation.getIndividuals().size(); i++) {
+		for (int i = elite; i < newPopulation.getIndividuals().size(); i++) {
 			mutate(newPopulation.getIndividual(i));
 		}
 
@@ -79,7 +78,7 @@ public class SimpleGeneticAlgorithm {
 	}
 
 	private Individual tournamentSelection(Population pop) {
-		Population tournament = new Population(tournamentSize, false);
+		Population tournament = new Population(problem, tournamentSize, false);
 		for (int i = 0; i < tournamentSize; i++) {
 			int randomId = (int) (Math.random() * pop.getIndividuals().size());
 			tournament.getIndividuals().add(i, pop.getIndividual(randomId));
