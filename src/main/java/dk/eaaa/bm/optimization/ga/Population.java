@@ -12,7 +12,7 @@ public class Population {
 	private Problem problem;
 	
 	public Population(Problem problem, int size, boolean createNew) {
-		individuals = new ArrayList<>();
+		individuals = new ArrayList<>(size);
 		this.problem = problem;
 		if (createNew) {
 			createNewPopulation(size);

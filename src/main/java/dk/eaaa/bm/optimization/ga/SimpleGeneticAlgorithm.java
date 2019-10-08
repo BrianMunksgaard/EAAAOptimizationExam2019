@@ -14,15 +14,16 @@ public class SimpleGeneticAlgorithm {
 	private double uniformRate = 0.5;
 	private double mutationRate = 0.025;
 	private final int tournamentSize = 5;
-	private final int elite = 0;
+	private int eliteSize = 0;
 	
-	public boolean runAlgorithm(Problem problem, int populationSize, int generations, double uniformRate, double mutationRate) {
+	public boolean runAlgorithm(Problem problem, int populationSize, int generations, double uniformRate, double mutationRate, int eliteSize) {
 
 		this.problem = problem;
 		this.populationSize = populationSize;
 		this.generations = generations;
 		this.uniformRate = uniformRate;
 		this.mutationRate = mutationRate;
+		this.eliteSize = eliteSize;
 		
 		Population myPop = new Population(this.problem, this.populationSize, true);
 		Individual bestIndividual = myPop.getFittest();
@@ -41,21 +42,14 @@ public class SimpleGeneticAlgorithm {
 		}
 		
 		
-//		while (myPop.getFittest().getFitness() < getMaxFitness()) {
-//			System.out.println(
-//					"Generation: " + generationCount + " Correct genes found: " + myPop.getFittest().getFitness());
-//			myPop = evolvePopulation(myPop);
-//			generationCount++;
-//		}
-//		System.out.println("Solution found!");
-//		System.out.println("Generation: " + generationCount);
-//		System.out.println("Genes: ");
-//		System.out.println(myPop.getFittest());
 		return true;
 	}
 
-	public Population evolvePopulation(Population pop) {
-		int elitismOffset = elite;
+	/*
+	 * Grows the current population and returns the next generation. 
+	 */
+	private Population evolvePopulation(Population pop) {
+		int elitismOffset = eliteSize;
 		
 		// Prepare the new population.
 		Population newPopulation = new Population(problem, pop.getIndividuals().size(), false);
@@ -63,7 +57,7 @@ public class SimpleGeneticAlgorithm {
 		// Let the best individuals survive to the next generation. 
 		pop.sort();
 		for (int i = 0; i < elitismOffset - 1; i++) {
-			newPopulation.setIndividual(i, pop.getIndividual(i));
+			newPopulation.getIndividuals().add(pop.getIndividual(i));
 		}
 
 		// Now prepare for the crossover. For each individual, except the survivors,
@@ -72,7 +66,7 @@ public class SimpleGeneticAlgorithm {
 			Individual indiv1 = tournamentSelection(pop);
 			Individual indiv2 = tournamentSelection(pop);
 			Individual newIndiv = crossover(indiv1, indiv2);
-			newPopulation.getIndividuals().add(i, newIndiv);
+			newPopulation.getIndividuals().add(newIndiv);
 		}
 
 		// Mutate the individuals except the best that survived from
