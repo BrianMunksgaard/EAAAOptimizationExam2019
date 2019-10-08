@@ -10,7 +10,7 @@
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>/tmp/hillclimber.log</file>
+		<file>/tmp/algorithm.log</file>
 		<append>false</append>
 		<encoder>
 			<pattern>%msg%n</pattern>
