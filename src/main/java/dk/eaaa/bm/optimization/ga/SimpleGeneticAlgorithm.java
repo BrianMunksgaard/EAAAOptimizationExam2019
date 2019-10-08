@@ -25,14 +25,21 @@ public class SimpleGeneticAlgorithm {
 		this.mutationRate = mutationRate;
 		
 		Population myPop = new Population(this.problem, this.populationSize, true);
-		double bestFitness = myPop.getFittest().getFitness();
+		Individual bestIndividual = myPop.getFittest();
+		double bestFitness = bestIndividual.getFitness();
 		
 		for(int generationCount = 1; generationCount <= this.generations; generationCount++) {
-			double currentFitness = myPop.getFittest().getFitness();
-			
-			String msg = String.format("Generations: %d, Evaluations: %d, Best fitness: %.4f, Current fitness: %.4f", generationCount, bestFitness, currentFitness);
-			log.info("Generations: {}, Evaluations: {}, Best fitness: {}, Current fitness: {}", );
+			Individual currentIndividual = myPop.getFittest();
+			double currentFitness = currentIndividual.getFitness();
+			if(bestFitness < currentFitness) {
+				bestIndividual = currentIndividual;
+				bestFitness = currentFitness;
+			}
+			String msg = String.format("Generations: %d, Evaluations: %d, Best fitness: %.4f, Current fitness: %.4f", generationCount, 0, bestFitness, currentFitness);
+			log.info(msg);
+			myPop = evolvePopulation(myPop);
 		}
+		
 		
 //		while (myPop.getFittest().getFitness() < getMaxFitness()) {
 //			System.out.println(
