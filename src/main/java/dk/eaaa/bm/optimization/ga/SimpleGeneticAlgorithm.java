@@ -4,17 +4,28 @@ import dk.eaaa.bm.optimization.problem.Problem;
 
 public class SimpleGeneticAlgorithm {
 
-	private static final double uniformRate = 0.5;
-	private static final double mutationRate = 0.025;
-	private static final int tournamentSize = 5;
-	private static final boolean elitism = true;
+	private Problem problem = null;
+	private int populationSize = 0;
+	private int generations = 0;
+	private double uniformRate = 0.5;
+	private double mutationRate = 0.025;
+	private final int tournamentSize = 5;
+	private final int elite = 0;
 	
+	public boolean runAlgorithm(Problem problem, int populationSize, int generations, double uniformRate, double mutationRate) {
 
-	public boolean runAlgorithm(Problem problem, int populationSize) {
-
-		Population myPop = new Population(populationSize, true);
-
-		int generationCount = 1;
+		this.problem = problem;
+		this.populationSize = populationSize;
+		this.generations = generations;
+		this.uniformRate = uniformRate;
+		this.mutationRate = mutationRate;
+		
+		Population myPop = new Population(this.problem, this.populationSize, true);
+		
+		for(int generationCount = 1; generationCount <= this.generations; generationCount++) {
+			
+		}
+		
 //		while (myPop.getFittest().getFitness() < getMaxFitness()) {
 //			System.out.println(
 //					"Generation: " + generationCount + " Correct genes found: " + myPop.getFittest().getFitness());
@@ -30,14 +41,7 @@ public class SimpleGeneticAlgorithm {
 
 	public Population evolvePopulation(Population pop) {
 		int elitismOffset;
-		Population newPopulation = new Population(pop.getIndividuals().size(), false);
-
-		if (elitism) {
-			newPopulation.getIndividuals().add(0, pop.getFittest());
-			elitismOffset = 1;
-		} else {
-			elitismOffset = 0;
-		}
+		Population newPopulation = new Population(problem, pop.getIndividuals().size(), false);
 
 		for (int i = elitismOffset; i < pop.getIndividuals().size(); i++) {
 			Individual indiv1 = tournamentSelection(pop);
