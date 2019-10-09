@@ -3,7 +3,6 @@ package dk.eaaa.bm.optimization.ga;
 import java.util.ArrayList;
 
 import dk.eaaa.bm.optimization.problem.Problem;
-import dk.eaaa.bm.optimization.util.ProblemUtil;
 
 public class Individual implements Comparable<Individual> {
 

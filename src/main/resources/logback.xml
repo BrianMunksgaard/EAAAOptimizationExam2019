@@ -9,18 +9,37 @@
 		</encoder>
 	</appender>
 
-	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
-		<file>/tmp/algorithm.log</file>
-		<append>false</append>
-		<encoder>
-			<pattern>%msg%n</pattern>
-		</encoder>
+	<appender name="SIFT" class="ch.qos.logback.classic.sift.SiftingAppender">
+		<discriminator>
+			<Key>loggerFileName</Key>
+			<DefaultValue>unknown</DefaultValue>
+		</discriminator>
+		<sift>
+			<appender class="ch.qos.logback.core.FileAppender">
+				<file>/tmp/algorithm/${loggerFileName}.log</file>
+				<append>false</append>
+				<encoder>
+					<pattern>%msg%n</pattern>
+				</encoder>
+			</appender>
+		</sift>
 	</appender>
 
+
+	<!-- <appender name="FILE" class="ch.qos.logback.core.FileAppender"> -->
+	<!-- <file>/tmp/algorithm.log</file> -->
+	<!-- <append>false</append> -->
+	<!-- <encoder> -->
+	<!-- <pattern>%msg%n</pattern> -->
+	<!-- </encoder> -->
+	<!-- </appender> -->
+
+
+
 	<logger name="dk.eaaa.bm" level="INFO">
-		<appender-ref ref="FILE" />
+		<appender-ref ref="SIFT" />
 	</logger>
-	
+
 	<root level="INFO">
 		<appender-ref ref="STDOUT" />
 	</root>
