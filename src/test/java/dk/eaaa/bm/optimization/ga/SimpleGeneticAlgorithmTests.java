@@ -1,11 +1,19 @@
 package dk.eaaa.bm.optimization.ga;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.event.Level;
+
+import com.qampo.util.vizualization.DataPoint;
+import com.qampo.util.vizualization.DataSerie;
+import com.qampo.util.vizualization.Plotter;
 
 import dk.eaaa.bm.optimization.ga.SimpleGeneticAlgorithm;
 import dk.eaaa.bm.optimization.problem.P1;
@@ -18,22 +26,132 @@ import dk.eaaa.bm.optimization.util.TimerUtil;
 public class SimpleGeneticAlgorithmTests {
 
 	@Test
-	public void runAlgo() {
+	public void p1Test() throws Exception {
+		String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+		String loggerName = this.getClass().getName() + methodName;
+		Logger log = LoggerFactory.getLogger(loggerName);		
+
+		List<DataSerie> plotData = new ArrayList<DataSerie>();
 		
-		Problem problem = new RevAckley();
+		Problem problem = new P1();
 		
 		AlgorithmParameters parms = AlgorithmParameters.builder()
+				.populationSize(10)
+				.generations(100)
+				.uniformRate(0.5)
+				.mutationRate(0.025)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
+
+		parms = AlgorithmParameters.builder()
 				.populationSize(100)
 				.generations(100)
 				.uniformRate(0.5)
 				.mutationRate(0.025)
 				.eliteSize(5)
 				.build();
+		plotData.add(runAlgorithm(problem, parms));
+
+		parms = AlgorithmParameters.builder()
+				.populationSize(100)
+				.generations(100)
+				.uniformRate(0.9)
+				.mutationRate(0.25)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
 		
-		runAlgorithm(problem, parms);
+		parms = AlgorithmParameters.builder()
+				.populationSize(1000)
+				.generations(100)
+				.uniformRate(0.5)
+				.mutationRate(0.025)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
+
+		parms = AlgorithmParameters.builder()
+				.populationSize(10)
+				.generations(100)
+				.uniformRate(0.9)
+				.mutationRate(0.025)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
+		
+		parms = AlgorithmParameters.builder()
+				.populationSize(10)
+				.generations(100)
+				.uniformRate(0.9)
+				.mutationRate(0.9)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
+
+
+		Plotter plotter = new Plotter();
+		String filename = plotter.plot(plotData, methodName, "Generations", "BestFitness");
+		log.info("Graph file: {}",  filename);
+		log.info("**********************");
+			
 	}
 	
-	private void runAlgorithm(Problem problem, AlgorithmParameters parms) {
+	@Test
+	public void revAckley() throws Exception {
+		
+		String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+		String loggerName = this.getClass().getName() + methodName;
+		Logger log = LoggerFactory.getLogger(loggerName);		
+
+		List<DataSerie> plotData = new ArrayList<DataSerie>();
+		
+		Problem problem = new RevAckley();
+		
+		AlgorithmParameters parms = AlgorithmParameters.builder()
+				.populationSize(10)
+				.generations(100)
+				.uniformRate(0.5)
+				.mutationRate(0.025)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
+
+		parms = AlgorithmParameters.builder()
+				.populationSize(100)
+				.generations(100)
+				.uniformRate(0.5)
+				.mutationRate(0.025)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
+
+		parms = AlgorithmParameters.builder()
+				.populationSize(1000)
+				.generations(100)
+				.uniformRate(0.5)
+				.mutationRate(0.025)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
+
+		parms = AlgorithmParameters.builder()
+				.populationSize(10)
+				.generations(100)
+				.uniformRate(0.9)
+				.mutationRate(0.25)
+				.eliteSize(5)
+				.build();
+		plotData.add(runAlgorithm(problem, parms));
+
+
+		Plotter plotter = new Plotter();
+		String filename = plotter.plot(plotData, methodName, "Generations", "BestFitness");
+		log.info("Graph file: {}",  filename);
+		log.info("**********************");
+	}
+	
+	private DataSerie runAlgorithm(Problem problem, AlgorithmParameters parms) throws Exception {
 		Problem p = problem;
 				
 		// Name used when timing the run time of the algorithm.
@@ -47,60 +165,17 @@ public class SimpleGeneticAlgorithmTests {
 		// Call algorithm.
 		TimerUtil tu = TimerUtil.start(log, Level.INFO, opName);
 		SimpleGeneticAlgorithm ga = new SimpleGeneticAlgorithm();
-		ga.runAlgorithm(problem, parms.getPopulationSize(), parms.getGenerations(), parms.getUniformRate(), parms.getMutationRate(), parms.getEliteSize());
+		List<GenerationProperties> algoResult = ga.runAlgorithm(problem, parms.getPopulationSize(), parms.getGenerations(), parms.getUniformRate(), parms.getMutationRate(), parms.getEliteSize());
 		tu.stop();
-
-//		Double best = p.eval(result);
-		log.info("");
-//		return Pair.with(best, result);
+		log.info("* * * * *");
+		
+		// Create data series for visual presentation.
+		List<DataPoint> points = new ArrayList<>();
+		for(GenerationProperties g : algoResult) {
+			DataPoint dp = new DataPoint(g.getGenerationNumberAsDouble(), g.getBestFitnessVal());
+			points.add(dp);
+		}
+		DataSerie series = new DataSerie(opName + ", Number of evaluations: " + ProblemNumbers.getInstance().getNoOfEvaluations(), points);
+		return series;
 	}
-	
-	
-//	private Pair<Double, ArrayList<Double>> findSolutionUsingNeighborFactoryCircumferenceImpl(Problem p, int iterations, double stepSize, int neighbors) {
-//	Problem problem = new ProblemWrapper(p);
-//	NeighborFactory neighborFactory = new NeighborFactoryCircumferenceImpl(neighbors);
-//	NeighborSelector neighborSelector = new NeighborSelectorPickBestFromLocalHillImpl(problem, neighborFactory);
-//	
-//	String opName = 
-//			neighborFactory.getClass().getSimpleName() + " - "
-//			+ p.getClass().getSimpleName() + ", "
-//			+ "Iter=" + Integer.toString(iterations) + ", " 
-//			+ "StepSize=" + Double.toString(stepSize) + ", "
-//			+ "Neighbors=" + Integer.toString(neighbors); 
-//			
-//	String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
-//    String loggerName = this.getClass().getName() + methodName;
-//    Logger log = LoggerFactory.getLogger(loggerName);
-//
-//	TimerUtil tu = TimerUtil.start(log, Level.INFO, opName);
-//	ImprovedHillClimbing solver = new ImprovedHillClimbing(problem, neighborSelector);
-//	ArrayList<Double> result = solver.findOptima(iterations, stepSize);
-//	tu.stop();
-//	Double best = p.eval(result);
-//	log.info("");
-//	return Pair.with(best, result);
-//}
-//
-//private void findSolutionUsingNeighborFactoryGridImpl(Problem p, int iterations, double stepSize) {
-//	Problem problem = new ProblemWrapper(p);
-//	NeighborFactory neighborFactory = new NeighborFactoryGridImpl();
-//	NeighborSelector neighborSelector = new NeighborSelectorPickBestFromLocalHillImpl(problem, neighborFactory);
-//	
-//	String opName = 
-//			neighborFactory.getClass().getSimpleName() + " - "
-//			+ p.getClass().getSimpleName() + ", "
-//			+ "Iter=" + Integer.toString(iterations) + ", " 
-//			+ "StepSize=" + Double.toString(stepSize); 
-//			
-//	String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
-//    String loggerName = this.getClass().getName() + methodName;
-//    Logger log = LoggerFactory.getLogger(loggerName);
-//
-//	TimerUtil tu = TimerUtil.start(log, Level.INFO, opName);
-//	ImprovedHillClimbing solver = new ImprovedHillClimbing(problem, neighborSelector);
-//	solver.findOptima(iterations, stepSize);
-//	tu.stop();
-//	log.info("");
-//}
-
 }

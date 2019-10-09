@@ -1,7 +1,8 @@
 package dk.eaaa.bm.optimization.ga;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
-
 import dk.eaaa.bm.optimization.problem.Problem;
 import lombok.extern.slf4j.Slf4j;
 
@@ -16,7 +17,17 @@ public class SimpleGeneticAlgorithm {
 	private final int tournamentSize = 5;
 	private int eliteSize = 0;
 	
-	public boolean runAlgorithm(Problem problem, int populationSize, int generations, double uniformRate, double mutationRate, int eliteSize) {
+	/**
+	 * 
+	 * @param problem
+	 * @param populationSize
+	 * @param generations
+	 * @param uniformRate
+	 * @param mutationRate
+	 * @param eliteSize
+	 * @return
+	 */
+	public List<GenerationProperties> runAlgorithm(Problem problem, int populationSize, int generations, double uniformRate, double mutationRate, int eliteSize) {
 
 		this.problem = problem;
 		this.populationSize = populationSize;
@@ -25,24 +36,59 @@ public class SimpleGeneticAlgorithm {
 		this.mutationRate = mutationRate;
 		this.eliteSize = eliteSize;
 		
-		Population myPop = new Population(this.problem, this.populationSize, true);
-		Individual bestIndividual = myPop.getFittest();
-		double bestFitness = bestIndividual.getFitness();
+		ProblemNumbers.getInstance().reset();
+		List <GenerationProperties> algoResult = new ArrayList<>();
 		
-		for(int generationCount = 1; generationCount <= this.generations; generationCount++) {
-			Individual currentIndividual = myPop.getFittest();
-			double currentFitness = currentIndividual.getFitness();
-			if(bestFitness < currentFitness) {
-				bestIndividual = currentIndividual;
-				bestFitness = currentFitness;
+		// Population.
+		Population myPop = null;
+		int generationCount = 0;
+		
+		// Best overall individual.
+		Individual bestIndividual = null;
+		double bestFitness = -Double.MAX_VALUE;
+		
+		// Best individual in the current population.
+		Individual bestPopulationIndividual = null;
+		double bestPopulationFitness = -Double.MAX_VALUE;
+				
+		// Now evolve the population until the specified number of generations has been reached.
+		while (++generationCount <= this.generations) {
+			
+			// First generation.
+			if(generationCount == 1) {
+				myPop = new Population(this.problem, this.populationSize, true);
+				bestIndividual = myPop.getFittest();
+				bestFitness = bestIndividual.getFitness();
+				bestPopulationIndividual = bestIndividual;
+				bestPopulationFitness = bestFitness;
+				
+			// Next generation.	
+			} else {
+				myPop = evolvePopulation(myPop);
+				
+				bestPopulationIndividual = myPop.getFittest();
+				bestPopulationFitness = bestPopulationIndividual.getFitness();
+				
+				if(bestFitness < bestPopulationIndividual.getFitness()) {
+					bestIndividual = bestPopulationIndividual;
+					bestFitness = bestPopulationFitness;
+				}		
 			}
-			String msg = String.format("Generations: %d, Evaluations: %d, Best fitness: %.4f, Current fitness: %.4f", generationCount, 0, bestFitness, currentFitness);
+
+			GenerationProperties result = GenerationProperties.builder()
+					.generationNumber(generationCount)
+					.bestIndividual(bestIndividual)
+					.bestFitnessVal(bestFitness)
+					.numberOfEvaluations(ProblemNumbers.getInstance().getNoOfEvaluations())
+					.build();
+			
+			algoResult.add(result);
+
+			String msg = String.format("Generations: %d, Evaluations: %d, Best fitness: %.4f, Current fitness: %.4f", generationCount, ProblemNumbers.getInstance().getNoOfEvaluations(), bestFitness, bestPopulationFitness);
 			log.info(msg);
-			myPop = evolvePopulation(myPop);
-		}
+		} 
 		
-		
-		return true;
+		return algoResult;
 	}
 
 	/*

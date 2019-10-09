@@ -50,6 +50,13 @@
 			<artifactId>javatuples</artifactId>
 			<version>1.2</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>com.qampo</groupId>
+			<artifactId>qampo-util-visualization</artifactId>
+			<version>0.0.3</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -174,12 +181,12 @@
 		</resources>
 	</build>
 
-	<!-- <repositories> -->
-	<!-- <repository> -->
-	<!-- <id>myMavenRepoRead</id> -->
-	<!-- <url>${myMavenRepoReadUrl}</url> -->
-	<!-- </repository> -->
-	<!-- </repositories> -->
+	<repositories>
+		<repository>
+			<id>myMavenRepoRead</id>
+			<url>${myMavenRepoReadUrl}</url>
+		</repository>
+	</repositories>
 
 	<!-- <distributionManagement> -->
 	<!-- <repository> -->

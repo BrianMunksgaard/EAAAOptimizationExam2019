@@ -16,7 +16,11 @@ public class Individual implements Comparable<Individual> {
 	public Individual(Problem problem) {
 		this.problem = problem;
 		this.defaultGeneLength = problem.getDimensions();
-		this.genes = ProblemUtil.getRandomPoint(this.problem);
+		//this.genes = ProblemUtil.getRandomPoint(this.problem);
+		genes = new ArrayList<>(defaultGeneLength);
+		for(int i = 0; i < defaultGeneLength; i++) {
+			genes.add(problem.getMinValues().get(0));
+		}
 	}
 
 	protected double getSingleGene(int index) {
@@ -39,6 +43,7 @@ public class Individual implements Comparable<Individual> {
 		if (fitness == -Double.MAX_VALUE) {
 			//fitness = SimpleGeneticAlgorithm.getFitness(this, problem);
 			fitness = problem.eval(genes);
+			ProblemNumbers.getInstance().incNumberOfEvaluations();
 		}
 		return fitness;
 	}
