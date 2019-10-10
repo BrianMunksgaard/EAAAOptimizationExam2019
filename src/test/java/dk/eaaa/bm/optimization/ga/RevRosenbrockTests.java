@@ -13,6 +13,7 @@ import com.qampo.util.vizualization.DataSerie;
 import dk.eaaa.bm.optimization.TestHelper;
 import dk.eaaa.bm.optimization.problem.Problem;
 import dk.eaaa.bm.optimization.problem.RevRosenbrock;
+import dk.eaaa.bm.optimization.problem.RevSphere;
 
 @RunWith(JUnit4.class)
 public class RevRosenbrockTests {
@@ -91,6 +92,73 @@ public class RevRosenbrockTests {
 				.build();
 		plotData.add(TestHelper.runAlgorithm(problem, parms));
 
+
+		TestHelper.buildGraph(plotData, methodName);
+		log.info("**********************");
+			
+		MDC.remove("loggerFileName");
+	}
+	
+	@Test
+	public void revRosenbrockWithHighPopulationCountAndManyGenerations() throws Exception {
+		String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+		String loggerName = this.getClass().getName() + methodName;
+		
+		MDC.put("loggerFileName", methodName);
+		Logger log = LoggerFactory.getLogger(loggerName);		
+
+		List<DataSerie> plotData = new ArrayList<DataSerie>();
+		
+		Problem problem = new RevRosenbrock();
+		
+		AlgorithmParameters parms = AlgorithmParameters.builder()
+				.populationSize(1000)
+				.generations(500)
+				.uniformRate(0.5)
+				.mutationRate(0.025)
+				.eliteSize(5)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
+
+		// Elite size increased.
+		parms = AlgorithmParameters.builder()
+				.populationSize(1000)
+				.generations(500)
+				.uniformRate(0.5)
+				.mutationRate(0.025)
+				.eliteSize(15)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
+
+		// Uniform rate increased.
+		parms = AlgorithmParameters.builder()
+				.populationSize(1000)
+				.generations(500)
+				.uniformRate(0.9)
+				.mutationRate(0.025)
+				.eliteSize(5)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
+
+		// Mutation rate increased.
+		parms = AlgorithmParameters.builder()
+				.populationSize(1000)
+				.generations(500)
+				.uniformRate(0.5)
+				.mutationRate(0.1)
+				.eliteSize(5)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
+
+		// Elite, Uniform and Mutation all increased.
+		parms = AlgorithmParameters.builder()
+				.populationSize(1000)
+				.generations(500)
+				.uniformRate(0.9)
+				.mutationRate(0.1)
+				.eliteSize(15)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
 
 		TestHelper.buildGraph(plotData, methodName);
 		log.info("**********************");

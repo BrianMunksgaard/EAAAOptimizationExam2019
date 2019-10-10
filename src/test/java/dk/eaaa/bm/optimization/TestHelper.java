@@ -33,7 +33,7 @@ public class TestHelper {
 		// Call algorithm.
 		TimerUtil tu = TimerUtil.start(log, Level.INFO, opName);
 		SimpleGeneticAlgorithm ga = new SimpleGeneticAlgorithm();
-		List<GenerationProperties> algoResult = ga.runAlgorithm(problem, parms.getPopulationSize(), parms.getGenerations(), parms.getUniformRate(), parms.getMutationRate(), parms.getEliteSize());
+		List<GenerationProperties> algoResult = ga.runAlgorithm(problem, parms.getPopulationSize(), parms.getGenerations(), parms.getUniformRate(), parms.getMutationRate(), parms.getEliteSize(), parms.getMutationType());
 		tu.stop();
 		log.info("* * * * *");
 		

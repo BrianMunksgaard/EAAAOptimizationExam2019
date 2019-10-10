@@ -47,6 +47,9 @@ public class AlgorithmParameters {
 	 * one generation to the next.
 	 */
 	@Builder.Default
-	private final int eliteSize = 0;
+	private int eliteSize = 0;
+
+	@Builder.Default
+	private MutationType mutationType = MutationType.GAUSSIAN;
 
 }

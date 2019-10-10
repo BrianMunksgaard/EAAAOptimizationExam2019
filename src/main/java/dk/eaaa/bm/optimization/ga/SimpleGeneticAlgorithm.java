@@ -16,6 +16,7 @@ public class SimpleGeneticAlgorithm {
 	private double mutationRate = 0.025;
 	private final int tournamentSize = 5;
 	private int eliteSize = 0;
+	private MutationType mutationType;
 	
 	/**
 	 * 
@@ -27,7 +28,7 @@ public class SimpleGeneticAlgorithm {
 	 * @param eliteSize
 	 * @return
 	 */
-	public List<GenerationProperties> runAlgorithm(Problem problem, int populationSize, int generations, double uniformRate, double mutationRate, int eliteSize) {
+	public List<GenerationProperties> runAlgorithm(Problem problem, int populationSize, int generations, double uniformRate, double mutationRate, int eliteSize, MutationType mutationType) {
 
 		this.problem = problem;
 		this.populationSize = populationSize;
@@ -35,6 +36,7 @@ public class SimpleGeneticAlgorithm {
 		this.uniformRate = uniformRate;
 		this.mutationRate = mutationRate;
 		this.eliteSize = eliteSize;
+		this.mutationType = mutationType;
 		
 		ProblemNumbers.getInstance().reset();
 		List <GenerationProperties> algoResult = new ArrayList<>();
@@ -157,10 +159,19 @@ public class SimpleGeneticAlgorithm {
 	 */
 	private void mutate(Individual indiv) {
 		for (int i = 0; i < indiv.getDefaultGeneLength(); i++) {
+			
 			if (Math.random() <= mutationRate) {
-				Random r = new Random();
-				double gene = 0.1 * r.nextGaussian() + indiv.getSingleGene(i);
-				indiv.setSingleGene(i, gene);
+				if(MutationType.GAUSSIAN.equals(mutationType)) {
+					Random r = new Random();
+					double gene = 0.1 * r.nextGaussian() + indiv.getSingleGene(i);
+					indiv.setSingleGene(i, gene);
+				} else {
+					// Get lower and upper bounds for the current dimension.
+					Double minValCurrentDim = problem.getMinValues().get(0);
+					Double maxValCurrentDim = problem.getMaxValues().get(0);
+					double gene = minValCurrentDim + Math.random() * (maxValCurrentDim - minValCurrentDim);
+					indiv.setSingleGene(i, gene);
+				}
 			}
 		}
 	}

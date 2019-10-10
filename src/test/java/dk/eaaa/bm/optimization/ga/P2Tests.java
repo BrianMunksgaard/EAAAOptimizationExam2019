@@ -205,4 +205,62 @@ public class P2Tests {
 		
 		MDC.remove("loggerFileName");
 	}
+	
+	@Test
+	public void p2WithHigherMutationRatesAndUniformMutationType() throws Exception {
+		String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+		String loggerName = this.getClass().getName() + methodName;
+		
+		MDC.put("loggerFileName", methodName);
+		Logger log = LoggerFactory.getLogger(loggerName);		
+
+		List<DataSerie> plotData = new ArrayList<DataSerie>();
+		
+		Problem problem = new P2();
+		
+		AlgorithmParameters parms = AlgorithmParameters.builder()
+				.populationSize(100)
+				.generations(500)
+				.uniformRate(0.8)
+				.mutationRate(0.1)
+				.eliteSize(5)
+				.mutationType(MutationType.UNIFORM)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
+		
+		parms = AlgorithmParameters.builder()
+				.populationSize(100)
+				.generations(500)
+				.uniformRate(0.8)
+				.mutationRate(0.3)
+				.eliteSize(5)
+				.mutationType(MutationType.UNIFORM)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
+
+		parms = AlgorithmParameters.builder()
+				.populationSize(100)
+				.generations(500)
+				.uniformRate(0.8)
+				.mutationRate(0.5)
+				.eliteSize(15)
+				.mutationType(MutationType.UNIFORM)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
+		
+		parms = AlgorithmParameters.builder()
+				.populationSize(100)
+				.generations(500)
+				.uniformRate(0.8)
+				.mutationRate(0.7)
+				.eliteSize(15)
+				.mutationType(MutationType.UNIFORM)
+				.build();
+		plotData.add(TestHelper.runAlgorithm(problem, parms));
+
+		TestHelper.buildGraph(plotData, methodName);
+		log.info("**********************");
+		
+		MDC.remove("loggerFileName");
+	}
 }
